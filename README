@@ -1,0 +1,14 @@
+
+COMM
+
+- The Polhemus High-Speed Liberty motion tracker uses USB
+
+QUIRKS
+
+- Device takes about ten seconds to initialize after switched on.  You
+  must wait this time before starting the daemon.
+
+- The sensor can only measure a positive displacement in X.  DO NOT
+  BREAK THE YZ PLANE!
+
+- The daemon does not use Euler angles, and you shouldn't either.
