@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -13,7 +11,7 @@
 #define BUFFER_SIZE 1000
 
 
-//void* readLiberty();
+int readLiberty(PiTracker *pTrak);
 
 int main(int argc, char* argv[])
 {
@@ -22,7 +20,7 @@ int main(int argc, char* argv[])
     CNX_PARAMS cp;
     int cnxSuccess;
     char *port;
-
+    int status;
     // load default parameters
     cnxStruct.cnxType=USB_CNX;  // defined in PiTracker.h
     cnxStruct.trackerType=TRKR_LIB_HS;  // defined in PiTerm.h
@@ -34,9 +32,7 @@ int main(int argc, char* argv[])
                                                            usbTrkParams[cnxStruct.trackerType].writeEp,
                                                            usbTrkParams[cnxStruct.trackerType].readEp);
 
-
     // get communication with the tracker
-//    cnxStruct.pTrak = new PiTracker;
     PiTracker* pTrak = new PiTracker;
     if(!pTrak)
     {
@@ -59,6 +55,11 @@ int main(int argc, char* argv[])
             }
         } while(cnxSuccess != 0);
 
+        // set units to centimeters
+        pTrak->WriteTrkData(&setUnits, 1);
+        pTrak->WriteTrkData(&toCentimeters, 1);
+        pTrak->WriteTrkData(&enter, 1);
+
         // display connection success message
         fprintf(stdout, "Connected to %s over USB\n", trackerNames[cnxStruct.trackerType]);
     }
@@ -72,43 +73,48 @@ int main(int argc, char* argv[])
         {
             // display connection error message
             fprintf(stderr, "Unable to connect to RS232 port %s.\n", port);
-            free(port);
+            //free(port);
         }
 
         // display connection success message
         fprintf(stdout, "Connect over RS232 at port %s.\n", port);
     }
-//    readLiberty();
-//}
+    status = readLiberty(pTrak);
+    printf("status: %d\n", status);
+    return status;
+}
 
-//void* readLiberty()
-//{
+    int readLiberty(PiTracker *pTrak)
+    {
     BYTE buf[BUFFER_SIZE];
 //    LPREAD_WRITE_STRUCT prs;// = (LPREAD_WRITE_STRUCT)pParam;
-//    PiTracker* pTrak = new PiTracker;
     int len = 0;
+    int initLen = 0;
     int bw;
     int keepLooping=1;
-
+    int startupKey = 67;
+    int keyval = 65293;
+    int startup = 112;
     // first establish communication and clear out any residual trash data
     do 
     {
+        pTrak->WriteTrkData((void*)"\r",1);
+        usleep(100000);
         len = pTrak->ReadTrkData(buf, BUFFER_SIZE); // keep trying to read until receiving a response
     } while (!len);
 
+        pTrak->WriteTrkData(&startupKey,1);
+        pTrak->WriteTrkData(&keyval,1);
     while (keepLooping)
     {
         len = pTrak->ReadTrkData(buf, BUFFER_SIZE); // read tracker data
         if(len > 0 && len < BUFFER_SIZE)
         {
             buf[len] = 0; // null terminate
-            do
-            {
-                printf("Data: %s\n", buf);
-                usleep(1000);
-            } while(!bw);
         }
         usleep(2000); // rest for 2ms
+        printf("Data: %s\n", buf);
     }
-    return NULL;
-}
+    pTrak->CloseTrk();
+    }
+

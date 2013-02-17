@@ -77,6 +77,12 @@ USB_PARAMS usbTrkParams[NUM_SUPP_TRKS]={
 const char* trackerNames[NUM_SUPP_TRKS]={
   "High Speed Liberty","Liberty","Patriot","Fastrak"};
 
+// Commands
+    int setUnits = 85;
+    int toCentimeters = 49;
+    int continuousRead = 67;
+    int singleRead = 112;
+    int enter = 65293;
 
 typedef struct {
     struct termios tio;

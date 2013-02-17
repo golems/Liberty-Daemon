@@ -75,13 +75,10 @@ int PiTracker::UsbConnect(int Vid,int Pid,int writeEp, int readEp){
   m_usbReadEp=readEp;
 
   m_handle=libusb_open_device_with_vid_pid(NULL,m_usbVid,m_usbPid);
-  std::cout << "handle: " << m_handle << std::endl;
   if (!m_handle)
     return -1;
-  fprintf(stdout, "got m_handle\n");  
 
   m_cnxType=USB_CNX;
-
   return 0;
 
 }
@@ -143,7 +140,6 @@ int PiTracker::WriteTrkData(void* data,int len){
   int bw=0;
 
   pthread_mutex_lock(&m_mutex);
-
   if (m_cnxType==USB_CNX)
     bw=WriteUsbData(data,len);
   else if (m_cnxType==RS232_CNX)
@@ -163,9 +159,7 @@ int PiTracker::ReadTrkData(void* buf,int maxLen){
   pthread_mutex_lock(&m_mutex);
   if (m_cnxType==USB_CNX)
   {
-    fprintf(stdout, "buf: %s\n", buf);
     br=ReadUsbData(buf,maxLen);
-    fprintf(stdout, "br = %d\n", br);
   }
   else if (m_cnxType==RS232_CNX)
     br=ReadRs232Data(buf,maxLen);
@@ -228,16 +222,17 @@ int PiTracker::WriteRs232Data(void* data,int len){
 
 
 int PiTracker::ReadUsbData(void* buf,int maxlen){
-  int br;
+  int bytesRead;
   if (m_FtContUsb){
-    libusb_interrupt_transfer(m_handle,FT_INT,(BYTE*)buf,maxlen,&br,50); // Fastrak's interrupt endpoint
-    if (m_lastFtCont && (br==0))
+    libusb_interrupt_transfer(m_handle,m_usbReadEp,(BYTE*)buf,maxlen,&bytesRead,50); // Fastrak's interrupt endpoint
+    if (m_lastFtCont && (bytesRead==0))
       m_FtContUsb=m_lastFtCont=0;
   }
 
-  else 
-    libusb_bulk_transfer(m_handle,m_usbReadEp,(BYTE*)buf,maxlen,&br,50);
-  return br;
+  else
+    libusb_bulk_transfer(m_handle,m_usbReadEp,(BYTE*)buf,maxlen,&bytesRead,50);
+    //printf("bytesread: %d\n", bytesRead);
+  return bytesRead;
 }
 
 int PiTracker::ReadRs232Data(void* buf,int maxLen){
