@@ -59,6 +59,7 @@ int main(int argc, char* argv[])
         pTrak->WriteTrkData(&setUnits, 1);
         pTrak->WriteTrkData(&toCentimeters, 1);
         pTrak->WriteTrkData(&enter, 1);
+        pTrak->WriteTrkData(&singleRead, 1);
 
         // display connection success message
         fprintf(stdout, "Connected to %s over USB\n", trackerNames[cnxStruct.trackerType]);
@@ -96,15 +97,15 @@ int main(int argc, char* argv[])
     int keyval = 65293;
     int startup = 112;
     // first establish communication and clear out any residual trash data
-    do 
-    {
-        pTrak->WriteTrkData((void*)"\r",1);
-        usleep(100000);
-        len = pTrak->ReadTrkData(buf, BUFFER_SIZE); // keep trying to read until receiving a response
-    } while (!len);
+//    do 
+//    {
+//        pTrak->WriteTrkData((void*)"\r",1);
+//        usleep(100000);
+//        len = pTrak->ReadTrkData(buf, BUFFER_SIZE); // keep trying to read until receiving a response
+//    } while (!len);
 
-        pTrak->WriteTrkData(&startupKey,1);
-        pTrak->WriteTrkData(&keyval,1);
+        pTrak->WriteTrkData(&continuousRead,1);
+        pTrak->WriteTrkData(&enter,1);
     while (keepLooping)
     {
         len = pTrak->ReadTrkData(buf, BUFFER_SIZE); // read tracker data
@@ -113,7 +114,7 @@ int main(int argc, char* argv[])
             buf[len] = 0; // null terminate
         }
         usleep(2000); // rest for 2ms
-        printf("Data: %s\n", buf);
+        printf("%s\n", buf);
     }
     pTrak->CloseTrk();
     }
