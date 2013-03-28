@@ -27,94 +27,38 @@ libusb Copyright © 2001 Johannes Erdfelt <johannes@erdfelt.com>
 Licensed under the GNU Lesser General Public License version 2.1 or later.
 */
 
-
 #ifndef LIBERTY_H_
 #define LIBERTY_H_
 
-#define LIBERTY_RECEIVERS 8
+#define LIBERTY_RECEIVERS		8
+#define ENTRY_SIZE				0x24 
+#define STATION_BYTE			0x2
+#define DATA_START_BYTE			0x8
+#define CHANNEL_NUM				0x8
 
-#include <termios.h>
-#include <stdio.h>
+#include "liberty_utils.h"
 
-enum{TRKR_LIB_HS,TRKR_LIB,TRKR_PAT,TRKR_FT,NUM_SUPP_TRKS};
-
-// structure definitions
-
-typedef struct _CNX_PARAMS {
-  int cnxType;
-  int tracker;
-  char port[50];
-}*LPCNX_PARAMS,CNX_PARAMS;
-
-typedef struct _CNX_STRUCT {
-  int cnxType;
-  int trackerType;
-  PiTracker* pTrak;
-}*LPCNX_STRUCT,CNX_STRUCT;
-
-typedef struct _USB_PARAMS {
-  int vid;
-  int pid;
-  int writeEp;
-  int readEp;
-}*LPUSB_PARAMS,USB_PARAMS;
-
-typedef struct _READ_WRITE_STRUCT {
-  int& keepLooping;
-  pthread_t* pthread;
-  void* pParam;
-}*LPREAD_WRITE_STRUCT,READ_WRITE_STRUCT;
-
-
-// usb vid/pids for Polehemus trackers
-USB_PARAMS usbTrkParams[NUM_SUPP_TRKS]={
-  {0x0f44,0xff20,0x04,0x88},  // Lib HS
-  {0x0f44,0xff12,0x02,0x82},   // Lib
-  {0x0f44,0xef12,0x02,0x82},  // Patriot
-  {0x0f44,0x0002,0x02,0x82}};  // Fastrak
-
-// polhemus tracker names
-const char* trackerNames[NUM_SUPP_TRKS]={
-  "High Speed Liberty","Liberty","Patriot","Fastrak"};
-
-// Commands
-    int setUnits = 85;
-    int toCentimeters = 49;
-    int continuousRead = 67;
-    int singleRead = 112;
-    int enter = 65293;
+//typedef struct {
+//	float data[7];
+//} *LPREC_STRUCT, REC_STRUCT;
 
 typedef struct {
-    struct termios tio;
-    int tty_fd;
-    FILE *fp;
-    char *dev;
-    double tf_vq[LIBERTY_RECEIVERS][7];
-} liberty_t;
+    CNX_STRUCT cnxs;
+    float sData[CHANNEL_NUM][7];		// data read from CHANNEL_NUM sensors
+    unsigned char lbuf[BUFFER_SIZE+1];
+    int head;
+    int tail;
+} *LPLIBERTY_STRUCT, LIBERTY_STRUCT;
 
-typedef struct{
-    float data[LIBERTY_RECEIVERS][7];
-} liberty_c_t; 
+int initLiberty( LPLIBERTY_STRUCT, const char * );
 
-/* Function: initLiberty(liberty_t *l, const char *dev)
- * Description: 
-*/
-int initLiberty( liberty_t *l, const char *dev );
+void destroyLiberty( LPLIBERTY_STRUCT );
 
-/* Function: destroyLiberty(liberty_t *l)
- * Description: 
-*/
-int destroyLiberty( liberty_t *l );
+int readLiberty( LPLIBERTY_STRUCT, unsigned char *, size_t );
+int readInitLiberty( LPLIBERTY_STRUCT );
+int readRecLiberty (LPLIBERTY_STRUCT);
 
-/* Function: readLiberty(liberty_t *l, liberty_c_t *liberty)
- * Description: 
-*/
-//int readLiberty( liberty_t *l, liberty_c_t *liberty );
-
-/* Function: readLiberty(void*)
- * Description: read sensor data from the Polhemus
- * Liberty tracker.
-*/
-void* readLiberty(void*);
+int configLiberty( LPLIBERTY_STRUCT, std::string s);
+void printRecLiberty( LPLIBERTY_STRUCT, int sensor);
 
 #endif

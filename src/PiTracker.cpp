@@ -223,6 +223,7 @@ int PiTracker::WriteRs232Data(void* data,int len){
 
 int PiTracker::ReadUsbData(void* buf,int maxlen){
   int bytesRead;
+
   if (m_FtContUsb){
     libusb_interrupt_transfer(m_handle,m_usbReadEp,(BYTE*)buf,maxlen,&bytesRead,50); // Fastrak's interrupt endpoint
     if (m_lastFtCont && (bytesRead==0))
@@ -231,7 +232,7 @@ int PiTracker::ReadUsbData(void* buf,int maxlen){
 
   else
     libusb_bulk_transfer(m_handle,m_usbReadEp,(BYTE*)buf,maxlen,&bytesRead,50);
-    //printf("bytesread: %d\n", bytesRead);
+//    printf("bytesread: %d\n", bytesRead);
   return bytesRead;
 }
 
