@@ -38,10 +38,6 @@ Licensed under the GNU Lesser General Public License version 2.1 or later.
 
 #include "liberty_utils.h"
 
-//typedef struct {
-//	float data[7];
-//} *LPREC_STRUCT, REC_STRUCT;
-
 typedef struct {
     CNX_STRUCT cnxs;
     float sData[CHANNEL_NUM][7];		// data read from CHANNEL_NUM sensors
@@ -56,9 +52,9 @@ void destroyLiberty( LPLIBERTY_STRUCT );
 
 int readLiberty( LPLIBERTY_STRUCT, unsigned char *, size_t );
 int readInitLiberty( LPLIBERTY_STRUCT );
-int readRecLiberty (LPLIBERTY_STRUCT);
+int readEntryLiberty (LPLIBERTY_STRUCT);
 
 int configLiberty( LPLIBERTY_STRUCT, std::string s);
-void printRecLiberty( LPLIBERTY_STRUCT, int sensor);
+void printSensorLiberty( LPLIBERTY_STRUCT, int sensor);
 
 #endif

@@ -1,13 +1,18 @@
+/* Interact with Polhemus High-Speed 
+   Liberty motion tracker through USB
+ */
+
+
 #include "liberty.h"
 #include "liberty_utils.h"
 
 static void printEntryLiberty(unsigned char *entry);
 
-// Commands
 
 // polhemus tracker names
 const char* trackerNames[NUM_SUPP_TRKS]={
   "High Speed Liberty","Liberty","Patriot","Fastrak"};
+
 
 // usb vid/pids for Polehemus trackers
 USB_PARAMS usbTrkParams[NUM_SUPP_TRKS]={
@@ -16,7 +21,8 @@ USB_PARAMS usbTrkParams[NUM_SUPP_TRKS]={
   {0x0f44,0xef12,0x02,0x82},  // Patriot
   {0x0f44,0x0002,0x02,0x82}};  // Fastrak
 
-// Configure Liberty before reading data
+
+// Send configure commands to Liberty
 int configLiberty(LPLIBERTY_STRUCT l, std::string s)
 {
   char buf[20];
@@ -40,13 +46,14 @@ int configLiberty(LPLIBERTY_STRUCT l, std::string s)
   return 0;
 }
 
+
 // Connect to Liberty
+//  return 0 if successful
 int initLiberty( LPLIBERTY_STRUCT l, const char *dev )
 {
     int cnxSuccess;
-//  int status;
 
-    // initialize all 0
+    // initialize liberty struct to all 0
     memset(l, 0, sizeof(LIBERTY_STRUCT));
 
     // load default parameters
@@ -81,22 +88,17 @@ int initLiberty( LPLIBERTY_STRUCT l, const char *dev )
         // display connection success message
         fprintf(stdout, "Connected to %s over USB\n", trackerNames[l->cnxs.trackerType]);
 
-        // do initial configure
-        // set units to centimeters
-
- //       configLiberty(l, "P");       // single reading
-
       return 0;
     } else
       return -1;
 
 }
 
+
 // Read to the end of an entry
 int readInitLiberty( LPLIBERTY_STRUCT l ) 
 {
 
-//  unsigned buf[4];
   unsigned char c;
   unsigned char tmpbuf[ENTRY_SIZE];
 
@@ -133,7 +135,7 @@ int readInitLiberty( LPLIBERTY_STRUCT l )
 
 // Return positive for the number of sensor read
 //         negative for error
-int readRecLiberty (LPLIBERTY_STRUCT l)
+int readEntryLiberty (LPLIBERTY_STRUCT l)
 {
 
   unsigned char buf[ENTRY_SIZE];
@@ -162,7 +164,8 @@ int readRecLiberty (LPLIBERTY_STRUCT l)
 }
 
 
-// Return length read
+// Read data to liberty buffer
+//  Return length read
 int readLiberty( LPLIBERTY_STRUCT l, unsigned char *buf, size_t left)
 {
     int nread;
@@ -203,6 +206,8 @@ void destroyLiberty( LPLIBERTY_STRUCT l ) {
     l->cnxs.pTrak->CloseTrk();
 }
 
+
+// print according to an entry received
 void printEntryLiberty(unsigned char *entry)
 {
     float data[7];
@@ -232,7 +237,8 @@ void printEntryLiberty(unsigned char *entry)
     printf("\n");
 }
 
-void printRecLiberty(LPLIBERTY_STRUCT l, int sensor)
+// print particular sensor data
+void printSensorLiberty(LPLIBERTY_STRUCT l, int sensor)
 {
     int i;
 
