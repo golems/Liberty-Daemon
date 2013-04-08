@@ -48,7 +48,7 @@ USAGE (Single computer)
 
 2. run the libertyd executable on the main computer
 
-    `./libertyd`
+    `sudo ./libertyd`
 
 
 USAGE (Two computers: from main computer to remote computer)
@@ -59,7 +59,7 @@ USAGE (Two computers: from main computer to remote computer)
 
 2. run the libertyd executable on the main computer
 
-    `./libertyd`
+    `sudo ./libertyd`
 
 3. push the data from the liberty channel to the remote computer using "achd" and the ip address of the remote computer
 
