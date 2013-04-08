@@ -51,7 +51,7 @@ USAGE (Single computer)
     `./libertyd`
 
 
-USAGE (From main computer to remote computer)
+USAGE (Two computers: from main computer to remote computer)
 =====
 1. create an ach channel on both computers called 'liberty' ("-o 666" gives sudo permissions)
 
@@ -61,7 +61,7 @@ USAGE (From main computer to remote computer)
 
     `./libertyd`
 
-3. push the data from the liberty channel to the remote computer using "achd" and the ip address of remote computer
+3. push the data from the liberty channel to the remote computer using "achd" and the ip address of the remote computer
 
     `sudo achd -r push 192.168.1.1 liberty`
 
