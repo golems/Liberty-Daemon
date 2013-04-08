@@ -63,7 +63,7 @@ USAGE (From main computer to remote computer)
 
 3. push the data from the liberty channel to the remote computer using "achd" and the ip address of remote computer
 
-    `sudo achd -r push 192.168.1.1 liberty'
+    `sudo achd -r push 192.168.1.1 liberty`
 
 QUIRKS
 ======
