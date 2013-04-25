@@ -5,6 +5,10 @@
 #include <assert.h>
 #include <ach.h>
 
+extern "C" {
+#include "daemonizer.h"
+}
+
 using namespace std;
 
 int main()
@@ -14,13 +18,20 @@ int main()
 
 	LIBERTY_STRUCT lbt;
 
+    
+    /************************
+     * Daemonize 
+     ***********************/
+
+    daemonize("libertyd");
+
 
     /*************************
      * Open ach channel
      *************************/
     r = ach_open(&chan, "liberty", NULL);
 
-    assert( ACH_OK == r );
+    daemon_assert( ACH_OK == r, __LINE__ );
     cout <<"liberty channel open correctly" << endl;
 
 
@@ -47,10 +58,16 @@ int main()
      *  data on ach channel
      *******************************************/
     int ret;    // sensor number or error
-    while ( (ret = readEntryLiberty(&lbt)) > 0 ) {
+    while ( (!daemon_sig_quit) && (ret = readEntryLiberty(&lbt)) > 0 ) {
+//    while ( (ret = readEntryLiberty(&lbt)) > 0 ) {
         ach_put(&chan, lbt.sData, sizeof(lbt.sData));       
 //        if (ret == 2)
 //            printSensorLiberty(&lbt, ret);
-//          usleep(500);
+        usleep(200);
     }
+
+
+    daemon_close();
+
+    return 0;
 }

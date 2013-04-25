@@ -5,6 +5,9 @@
 
 #include "liberty.h"
 #include "liberty_utils.h"
+extern "C" {
+#include "daemonizer.h"
+}
 
 static void printEntryLiberty(unsigned char *entry);
 
@@ -175,16 +178,21 @@ int readLiberty( LPLIBERTY_STRUCT l, unsigned char *buf, size_t left)
     toread = left;
     have = l->tail - l->head;
 
+    
+    AGAIN:
     if ( have < left) {
       memmove(buf, l->lbuf+l->head, have);
       left -= have;
 
       nread = l->cnxs.pTrak->ReadTrkData(l->lbuf, BUFFER_SIZE);
-      printf("Data read: %d\n", nread);
+//      printf("Data read: %d\n", nread);
 
-      if (nread == 0 || nread < left) {
-        fprintf(stderr, "Read tracker data too few\n");
-        exit(1);
+//      if (nread == 0 || nread < left) {
+      if (nread < left) {
+        daemon_assert(nread == 0, __LINE__);
+        goto AGAIN;
+//        fprintf(stderr, "Read tracker data too few\n");
+//        exit(1);
       }
 
       memmove(buf + have, l->lbuf, left);

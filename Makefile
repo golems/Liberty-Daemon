@@ -3,7 +3,7 @@ CXX := g++
 #include /usr/share/make-common/common.1.mk
 
 CXXFLAGS := -I./include -g -Wall
-CFLAGS := --std=gnu99 -O0
+CFLAGS := --std=gnu99 -O0 -I./include -g -Wall
 
 #default: $(LIBFILES) $(BINFILES)
 
@@ -11,7 +11,7 @@ CFLAGS := --std=gnu99 -O0
 
 #.PHONY: default clean
 
-BINARIES := libertyd #fastrakd fastrak-test libertyd
+BINARIES := libertyd #liberty-test
 
 all : $(BINARIES)
 
@@ -21,10 +21,13 @@ LIBS := -lach -lrt -lc -lm -lusb-1.0
 PiTracker.o: src/PiTracker.cpp
 	$(CXX) $(CXXFLAGS) -o $@ src/PiTracker.cpp $(LIBS)
 
-LIBERTY_OBJS := src/liberty.o src/PiTracker.o src/libertyd.o
+LIBERTY_OBJS := src/daemonizer.o src/liberty.o src/PiTracker.o src/libertyd.o
 
 libertyd: $(LIBERTY_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(LIBERTY_OBJS) $(LIBS) 
+
+#liberty-test: $(LIBERTY_OBJS)
+#	$(CC) $(CFLAGS) -o $@ $(LIBERTY_OBJS) $(LIBS) 
 
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
