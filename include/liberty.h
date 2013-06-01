@@ -30,34 +30,12 @@ Licensed under the GNU Lesser General Public License version 2.1 or later.
 #ifndef LIBERTY_H_
 #define LIBERTY_H_
 
+#define LIBERTY_CHAN_NAME "liberty"
 #define LIBERTY_RECEIVERS		8
-#define ENTRY_SIZE				0x24 
-#define STATION_BYTE			0x2
-#define DATA_START_BYTE			0x8
-#define CHANNEL_NUM				0x8
 
-#include "liberty_utils.h"
 typedef struct liberty_data {
-    float sensor[CHANNEL_NUM][7];
+    float sensor[LIBERTY_RECEIVERS][7];
 } liberty_data_t;
 
-typedef struct {
-    CNX_STRUCT cnxs;
-    float sData[CHANNEL_NUM][7];		// data read from CHANNEL_NUM sensors
-    unsigned char lbuf[BUFFER_SIZE+1];
-    int head;
-    int tail;
-} *LPLIBERTY_STRUCT, LIBERTY_STRUCT;
-
-int initLiberty( LPLIBERTY_STRUCT, const char * );
-
-void destroyLiberty( LPLIBERTY_STRUCT );
-
-int readLiberty( LPLIBERTY_STRUCT, unsigned char *, size_t );
-int readInitLiberty( LPLIBERTY_STRUCT );
-int readEntryLiberty (LPLIBERTY_STRUCT);
-
-int configLiberty( LPLIBERTY_STRUCT, std::string s);
-void printSensorLiberty( LPLIBERTY_STRUCT, int sensor);
 
 #endif

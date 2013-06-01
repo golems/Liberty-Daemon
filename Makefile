@@ -12,6 +12,7 @@ CFLAGS := --std=gnu99 -O0 -I./include -g -Wall
 #.PHONY: default clean
 
 BINARIES := libertyd #liberty-test
+HEADERS := include/liberty.h include/liberty_utils.h
 
 all : $(BINARIES)
 

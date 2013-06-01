@@ -11,6 +11,12 @@
 #include <sstream>
 #include <stdlib.h>
 
+
+#define ENTRY_SIZE				0x24 
+#define STATION_BYTE			0x2
+#define DATA_START_BYTE			0x8
+#define CHANNEL_NUM				0x8
+
 #define BUFFER_SIZE    1024
 
 enum {TRKR_LIB_HS,TRKR_LIB,TRKR_PAT,TRKR_FT,NUM_SUPP_TRKS};
@@ -39,5 +45,24 @@ typedef struct _READ_WRITE_STRUCT {
   pthread_t* pthread;
   void* pParam;
 }*LPREAD_WRITE_STRUCT,READ_WRITE_STRUCT;
+
+typedef struct {
+    CNX_STRUCT cnxs;
+    float sData[CHANNEL_NUM][7];		// data read from CHANNEL_NUM sensors
+    unsigned char lbuf[BUFFER_SIZE+1];
+    int head;
+    int tail;
+} *LPLIBERTY_STRUCT, LIBERTY_STRUCT;
+
+int initLiberty( LPLIBERTY_STRUCT, const char * );
+
+void destroyLiberty( LPLIBERTY_STRUCT );
+
+int readLiberty( LPLIBERTY_STRUCT, unsigned char *, size_t );
+int readInitLiberty( LPLIBERTY_STRUCT );
+int readEntryLiberty (LPLIBERTY_STRUCT);
+
+int configLiberty( LPLIBERTY_STRUCT, std::string s);
+void printSensorLiberty( LPLIBERTY_STRUCT, int sensor);
 
 #endif
