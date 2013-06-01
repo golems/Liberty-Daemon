@@ -35,6 +35,11 @@ libertyd: $(LIBERTY_OBJS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
+install: libertyd
+	install -D $(BINARIES) /usr/bin/$(BINARIES)
+
+.PHONY: install
+
 clean:
 	rm -fr $(BINARIES) src/*.o
 depclean: clean
