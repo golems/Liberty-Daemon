@@ -60,7 +60,11 @@ int main()
     int ret;    // sensor number or error
     while ( (!daemon_sig_quit) && (ret = readEntryLiberty(&lbt)) > 0 ) {
 //    while ( (ret = readEntryLiberty(&lbt)) > 0 ) {
-        ach_put(&chan, lbt.sData, sizeof(lbt.sData));       
+        liberty_data_t lib;
+        for(int j=0; j<CHANNEL_NUM; j++)
+            for(int k=0; k<7; k++)
+                lib.sensor[j][k] = lbt.sData[j][k];
+        ach_put(&chan, &lib, sizeof(lib));       
 //        if (ret == 2)
 //            printSensorLiberty(&lbt, ret);
         usleep(200);

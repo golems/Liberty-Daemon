@@ -37,6 +37,7 @@ libertyd: $(LIBERTY_OBJS)
 
 install: libertyd
 	install -D $(BINARIES) /usr/bin/$(BINARIES)
+	install -D include/liberty.h /usr/include/liberty.h
 
 .PHONY: install
 

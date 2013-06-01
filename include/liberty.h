@@ -37,6 +37,9 @@ Licensed under the GNU Lesser General Public License version 2.1 or later.
 #define CHANNEL_NUM				0x8
 
 #include "liberty_utils.h"
+typedef struct liberty_data {
+    float sensor[CHANNEL_NUM][7];
+} liberty_data_t;
 
 typedef struct {
     CNX_STRUCT cnxs;
