@@ -19,12 +19,10 @@ The following are necessary prerequites to use Liberty:
 
 2. install ach (up-to-date instruction are at http://github.com/golems/ach)
 
-  * Add the following to /etc/apt/sources:
+  * Add the following to /etc/apt/sources.list (substitute the codename for your distribution in place of squeeze,
+  e.g. wheezy, precise):
 
       deb http://code.golems.org/debian squeeze golems.org
-
-  (substitute the codename for your distribution in place of squeeze,
-  e.g. wheezy, precise)
 
     `sudo apt-get update && sudo apt-get install libach-dev ach-utils`
   
