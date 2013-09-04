@@ -28,8 +28,14 @@ The following are necessary prerequites to use Liberty:
   
     `sudo dpkg-reconfigure ach-utils`
 
+CLONE THIS REPO
+===============
+1. Close this Liberty-Daemon repo to your desired location on your computer.
+
+    `git clone https://github.com/golems/Liberty-Daemon.git`
+
 INSTALLATION
-=========
+============
 1. go to the Liberty-Daemon directory
 
       `cd Liberty-Daemon`
